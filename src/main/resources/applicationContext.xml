@@ -1,0 +1,35 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:hz="http://www.hazelcast.com/schema/spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<import resource="classpath:applicationContext-hazelcast.xml" />
+	
+	<!-- Beans Declaration -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	    <property name="locations">
+	        <list>
+	            <value>classpath:/hazelcast-config.properties</value>
+	        </list>
+	    </property>
+	</bean>	
+	
+	<bean id="cacheService" class="com.onlinetechvision.cache.srv.CacheService">
+    	<constructor-arg ref="customerMap"/>
+    </bean>
+    
+    <bean id="distributedExecutorService" class="com.onlinetechvision.executor.srv.DistributedExecutorService">
+    	<property name="hazelcastDistributedExecutorService" ref="hazelcastDistributedExecutorService" />
+    </bean>
+	
+    <bean id="hazelcast" class="com.hazelcast.core.Hazelcast"/>
+    
+    <bean id="starter" class="com.onlinetechvision.exe.Starter">
+   		<property name="hazelcastInstanceName" value="${hz.instance.name}" />
+    	<property name="hazelcast" ref="hazelcast" />
+    	<property name="distributedExecutorService" ref="distributedExecutorService" />
+    	<property name="cacheService" ref="cacheService" />
+    </bean>
+    
+</beans>

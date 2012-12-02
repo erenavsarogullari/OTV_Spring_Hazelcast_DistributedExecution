@@ -1,0 +1,52 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:hz="http://www.hazelcast.com/schema/spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.hazelcast.com/schema/spring
+        http://www.hazelcast.com/schema/spring/hazelcast-spring-2.4.xsd">
+
+	<hz:map id="customerMap" name="customerMap" instance-ref="instance"/>
+	
+	<!-- Hazelcast Distributed Executor Service definition -->
+	<hz:executorService id="hazelcastDistributedExecutorService" instance-ref="instance" name="hazelcastDistributedExecutorService" />
+	
+	<!-- Hazelcast Instance configuration -->
+	<hz:hazelcast id="instance">
+	    <hz:config>
+	    	
+	    	<!-- Hazelcast Instance Name -->
+	    	<hz:instance-name>${hz.instance.name}</hz:instance-name> 
+	        <hz:group name="${hz.group.name}" password="${hz.group.password}"/> 
+	    	<hz:management-center  enabled="${hz.management.center.enabled}" url="${hz.management.center.url}"/>
+	        <!-- Hazelcast Tcp based network configuration -->
+	        <hz:network port="${hz.network.port}" port-auto-increment="${hz.network.port.auto.increment}">
+	            <hz:join>
+	                <hz:tcp-ip enabled="${hz.tcp.ip.enabled}">
+	                    <hz:members>${hz.members}</hz:members>
+	                </hz:tcp-ip>
+	            </hz:join>
+	        </hz:network>
+	        
+	        <!-- Hazelcast Distributed Executor Service configuration -->
+	        <hz:executor-service name="executorService"
+                                 core-pool-size="${hz.executor.service.core.pool.size}"
+                                 max-pool-size="${hz.executor.service.max.pool.size}"
+                                 keep-alive-seconds="${hz.executor.service.keep.alive.seconds}"/>
+            
+            <!-- Hazelcast Distributed Map configuration -->                     
+	        <hz:map name="map"
+                backup-count="${hz.map.backup.count}"
+                max-size="${hz.map.max.size}"
+                eviction-percentage="${hz.map.eviction.percentage}"
+                read-backup-data="${hz.map.read.backup.data}"
+                cache-value="${hz.map.cache.value}"
+                eviction-policy="${hz.map.eviction.policy}"
+                merge-policy="${hz.map.merge.policy}"  />
+
+	    </hz:config>
+	     
+	</hz:hazelcast>
+	
+    
+</beans>
